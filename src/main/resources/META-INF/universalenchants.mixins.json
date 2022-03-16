@@ -10,6 +10,8 @@
     "DamageEnchantmentMixin",
     "EnchantmentMixin",
     "LivingEntityMixin",
+    "LootingEnchantFunctionMixin",
+    "LootItemRandomChanceWithLootingConditionMixin",
     "PlayerMixin",
     "ThrownTridentMixin",
     "TridentItemMixin",

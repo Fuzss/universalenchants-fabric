@@ -7,7 +7,6 @@ import fuzs.universalenchants.api.event.entity.living.LivingEntityUseItemEvents;
 import fuzs.universalenchants.api.event.entity.living.LivingExperienceDropCallback;
 import fuzs.universalenchants.api.event.entity.living.LivingHurtCallback;
 import fuzs.universalenchants.api.event.entity.living.LootingLevelCallback;
-import fuzs.universalenchants.api.event.entity.player.ArrowKnockCallback;
 import fuzs.universalenchants.api.event.entity.player.ArrowLooseCallback;
 import fuzs.universalenchants.config.ServerConfig;
 import fuzs.universalenchants.handler.BetterEnchantsHandler;
@@ -56,7 +55,6 @@ public class UniversalEnchants implements ModInitializer {
             betterEnchantsHandler.onLivingHurt(entity, source, amount);
             return true;
         });
-        // run after other mods had a chance to change looting level
         LivingExperienceDropCallback.EVENT.register(betterEnchantsHandler::onLivingExperienceDrop);
     }
 
