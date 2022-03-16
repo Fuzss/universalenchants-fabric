@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${modVersion}",
+
+  "name": "${modName}",
+  "description": "${modDescription}",
+  "authors": [
+    "${modAuthor}"
+  ],
+  "contact": {
+    "homepage": "${modPageUrl}",
+    "issues": "${modIssueUrl}",
+    "sources": "${modSourceUrl}"
+  },
+
+  "license": "Mozilla Public License 2.0",
+  "icon": "mod_logo.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "${mainEntryPoint}"
+    ]
+  },
+  "mixins": [
+    "META-INF/${modId}.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=${minFabricVersion}",
+    "fabric": ">=${minFabricApiVersion}",
+    "puzzleslib": ">=${minPuzzlesVersion}",
+    "forgeconfigapiport": "*",
+    "minecraft": ">=${minMinecraftVersion} <${nextMinecraftVersion}",
+    "java": ">=17",
+    "cardinal-components-base": "*",
+    "cardinal-components-entity": "*",
+    "extensibleenums": "*"
+  },
+
+  "custom": {
+    "cardinal-components": [
+      "${modId}:arrow_looting"
+    ]
+  }
+}
