@@ -1,6 +1,7 @@
 package fuzs.universalenchants.handler;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fuzs.extensibleenums.core.ExtensibleEnchantmentCategory;
@@ -10,7 +11,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 import java.util.Locale;
