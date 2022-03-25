@@ -32,7 +32,7 @@ public class ItemCompatManager {
     private final Map<Enchantment, EnchantmentCategoryData> enchantsToCategoryData = Maps.newHashMap();
 
     public void buildData() {
-        this.enchantsToCategoryData.values().forEach(EnchantmentCategoryData::clear);
+        this.enchantsToCategoryData.values().forEach(EnchantmentCategoryData::beginRebuilding);
         for (ExtendedEnchantmentCategory category : EXTENDED_CATEGORIES) {
             for (Enchantment enchantment : category.additionalEnchantments().get()) {
                 EnchantmentCategoryData data = this.enchantsToCategoryData.get(enchantment);
@@ -43,7 +43,7 @@ public class ItemCompatManager {
                 }
             }
         }
-        this.enchantsToCategoryData.values().forEach(EnchantmentCategoryData::buildBlacklistCache);
+        this.enchantsToCategoryData.values().forEach(EnchantmentCategoryData::finishRebuilding);
     }
 
     private static record ExtendedEnchantmentCategory(Predicate<Item> delegate, Supplier<Set<Enchantment>> additionalEnchantments, Supplier<Set<Item>> itemBlacklist) {
@@ -56,17 +56,13 @@ public class ItemCompatManager {
         private final List<ExtendedEnchantmentCategory> customCategories = Lists.newArrayList();
         private EnchantmentCategory customBuiltCategory;
         private Set<Item> blacklistCache;
+        private boolean rebuilding = true;
 
         public EnchantmentCategoryData(Enchantment enchantment, ExtendedEnchantmentCategory customCategory) {
             this.enchantment = enchantment;
             this.vanillaCategory = enchantment.category;
             this.customCategories.add(customCategory);
-            this.setEnchantmentCategory();
-        }
-
-        public void clear() {
-            this.customCategories.clear();
-            this.blacklistCache = null;
+            this.customBuildCategory();
         }
 
         public void merge(Enchantment enchantment, ExtendedEnchantmentCategory customCategory) {
@@ -74,7 +70,23 @@ public class ItemCompatManager {
             this.customCategories.add(customCategory);
         }
 
-        public void buildBlacklistCache() {
+        public void beginRebuilding() {
+            this.rebuilding = true;
+            this.clear();
+        }
+
+        public void finishRebuilding() {
+            this.buildBlacklistCache();
+            this.setEnchantmentCategory();
+            this.rebuilding = false;
+        }
+
+        private void clear() {
+            this.customCategories.clear();
+            this.blacklistCache = null;
+        }
+
+        private void buildBlacklistCache() {
             Set<Item> blacklistCache = Sets.newHashSet();
             for (ExtendedEnchantmentCategory category : this.customCategories) {
                 Set<Item> blacklist = category.itemBlacklist().get();
@@ -87,16 +99,20 @@ public class ItemCompatManager {
             if (this.customCategories.isEmpty()) {
                 ((EnchantmentAccessor) this.enchantment).setCategory(this.vanillaCategory);
             } else {
-                if (this.customBuiltCategory == null) {
-                    String name = Registry.ENCHANTMENT.getKey(this.enchantment).getPath().toUpperCase(Locale.ROOT);
-                    this.customBuiltCategory = ExtensibleEnchantmentCategory.create(UniversalEnchants.MOD_ID.toUpperCase(Locale.ROOT).concat("_" + name), this::canEnchant);
-                }
                 ((EnchantmentAccessor) this.enchantment).setCategory(this.customBuiltCategory);
+            }
+        }
+
+        private void customBuildCategory() {
+            if (this.customBuiltCategory == null) {
+                String name = Registry.ENCHANTMENT.getKey(this.enchantment).getPath().toUpperCase(Locale.ROOT);
+                this.customBuiltCategory = ExtensibleEnchantmentCategory.create(UniversalEnchants.MOD_ID.toUpperCase(Locale.ROOT).concat("_" + name), this::canEnchant);
             }
         }
 
         private boolean canEnchant(Item item) {
             if (this.vanillaCategory.canEnchant(item)) return true;
+            if (this.rebuilding) return false;
             if (this.blacklistCache.contains(item)) return false;
             for (ExtendedEnchantmentCategory category : this.customCategories) {
                 if (category.delegate().test(item)) return true;
