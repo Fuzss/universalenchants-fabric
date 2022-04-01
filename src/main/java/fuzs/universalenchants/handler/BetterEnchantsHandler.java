@@ -1,9 +1,11 @@
 package fuzs.universalenchants.handler;
 
 import fuzs.universalenchants.UniversalEnchants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
@@ -12,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
@@ -59,6 +62,16 @@ public class BetterEnchantsHandler {
         if (!(entity instanceof Player) && source.isProjectile()) {
             entity.invulnerableTime = 0;
         }
+    }
+
+    public boolean onFarmlandTrample(Level level, BlockPos pos, BlockState state, float fallDistance, Entity entity) {
+        if (!UniversalEnchants.CONFIG.server().noFarmlandTrample) return true;
+        if (entity instanceof LivingEntity entity1) {
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FALL_PROTECTION, entity1) > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int onLivingExperienceDrop(LivingEntity entity, @Nullable Player attackingPlayer, int originalExperience, int droppedExperience) {

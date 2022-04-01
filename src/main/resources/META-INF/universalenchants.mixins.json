@@ -9,6 +9,7 @@
     "CrossbowItemMixin",
     "DamageEnchantmentMixin",
     "EnchantmentMixin",
+    "FarmBlockMixin",
     "LivingEntityMixin",
     "LootingEnchantFunctionMixin",
     "LootItemRandomChanceWithLootingConditionMixin",

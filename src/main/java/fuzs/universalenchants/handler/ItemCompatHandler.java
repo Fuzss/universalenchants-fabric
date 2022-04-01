@@ -32,7 +32,7 @@ public class ItemCompatHandler {
                     float[] shotPitches = getShotPitches(level.random, velocity);
                     for (int i = 0; i < 2; i++) {
                         AbstractArrow abstractarrow = arrowitem.createArrow(level, itemstack, player);
-                        abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot() - 10.0F + i * 20.0F, 0.0F, velocity * 3.0F, 1.0F);
+                        abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, velocity * 3.0F, 1.5F);
                         applyPowerEnchantment(abstractarrow, stack);
                         applyPunchEnchantment(abstractarrow, stack);
                         applyFlameEnchantment(abstractarrow, stack);
